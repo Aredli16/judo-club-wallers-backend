@@ -1,17 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { firestore } from '../firebase.config';
+import { getFirestore } from 'firebase-admin/firestore';
 import { Post } from './entities/post.entity';
 
 @Injectable()
 export class PostsService {
   async create(createPostDto: CreatePostDto) {
     try {
-      const response = await firestore.collection('posts').add({
-        ...createPostDto,
-        date_posted: new Date(),
-      });
+      const response = await getFirestore()
+        .collection('posts')
+        .add({
+          ...createPostDto,
+          date_posted: new Date(),
+        });
       return {
         response: 'Successfully added',
         data: {
@@ -35,7 +37,7 @@ export class PostsService {
     try {
       const posts: Post[] = [];
       (
-        await firestore.collection('posts').where('type', '==', type).get()
+        await getFirestore().collection('posts').where('type', '==', type).get()
       ).docs.map((data) => {
         posts.push({ id: data.id, ...(data.data() as Post) });
       });
@@ -49,7 +51,7 @@ export class PostsService {
     try {
       const posts: Post[] = [];
       (
-        await firestore
+        await getFirestore()
           .collection('posts')
           .where('type', '==', type)
           .where('important', '==', true)
@@ -64,7 +66,7 @@ export class PostsService {
   }
 
   async findOne(id: string): Promise<Post> {
-    const response = await firestore.collection('posts').doc(id).get();
+    const response = await getFirestore().collection('posts').doc(id).get();
     return { id: response.id, ...(response.data() as Post) };
   }
 
@@ -86,7 +88,7 @@ export class PostsService {
 
   async update(id: string, updatePostDto: UpdatePostDto) {
     try {
-      await firestore
+      await getFirestore()
         .collection('posts')
         .doc(id)
         .update({ ...updatePostDto });
@@ -100,7 +102,7 @@ export class PostsService {
 
   async remove(id: string) {
     try {
-      await firestore.collection('posts').doc(id).delete();
+      await getFirestore().collection('posts').doc(id).delete();
       return {
         response: 'Successfully delete',
       };
@@ -111,7 +113,7 @@ export class PostsService {
 
   async getAllPost(): Promise<Post[]> {
     const posts: Post[] = [];
-    (await firestore.collection('posts').get()).docs.map((data) => {
+    (await getFirestore().collection('posts').get()).docs.map((data) => {
       posts.push({
         id: data.id,
         ...(data.data() as Post),
