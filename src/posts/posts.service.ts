@@ -31,18 +31,41 @@ export class PostsService {
     return await this.getAllPost();
   }
 
+  async findAllByType(type: string) {
+    try {
+      const posts: Post[] = [];
+      (
+        await firestore.collection('posts').where('type', '==', type).get()
+      ).docs.map((data) => {
+        posts.push({ id: data.id, ...(data.data() as Post) });
+      });
+      return posts;
+    } catch (error) {
+      return { error: error };
+    }
+  }
+
+  async findImportantByType(type, count) {
+    try {
+      const posts: Post[] = [];
+      (
+        await firestore
+          .collection('posts')
+          .where('type', '==', type)
+          .where('important', '==', true)
+          .get()
+      ).docs.map((data) => {
+        posts.push({ id: data.id, ...(data.data() as Post) });
+      });
+      return posts;
+    } catch (error) {
+      return { error: error };
+    }
+  }
+
   async findOne(id: string): Promise<Post> {
     const response = await firestore.collection('posts').doc(id).get();
-    return {
-      id: response.id,
-      title: response.get('title'),
-      subtitle: response.get('subtitle'),
-      content: response.get('content'),
-      author: response.get('author'),
-      date_posted: response.get('date_posted').toDate(),
-      likes: response.get('likes'),
-      views: response.get('views'),
-    };
+    return { id: response.id, ...(response.data() as Post) };
   }
 
   async findPopular(count: number) {
@@ -90,14 +113,8 @@ export class PostsService {
     const posts: Post[] = [];
     (await firestore.collection('posts').get()).docs.map((data) => {
       posts.push({
-        id: data.ref.id,
-        title: data.get('title'),
-        subtitle: data.get('subtitle'),
-        content: data.get('content'),
-        author: data.get('author'),
-        date_posted: data.get('date_posted').toDate(),
-        likes: data.get('likes'),
-        views: data.get('views'),
+        id: data.id,
+        ...(data.data() as Post),
       });
     });
     return posts;

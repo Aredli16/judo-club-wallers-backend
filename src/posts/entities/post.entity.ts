@@ -7,4 +7,5 @@ export class Post {
   date_posted: number;
   likes: number;
   views: number;
+  type: string;
 }

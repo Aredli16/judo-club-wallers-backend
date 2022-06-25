@@ -22,7 +22,13 @@ export class PostsController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query() query) {
+    if (query.type) {
+      if (query.important === 'true' && query.count) {
+        return this.postsService.findImportantByType(query.type, query.count);
+      }
+      return this.postsService.findAllByType(query.type);
+    }
     return this.postsService.findAll();
   }
 
