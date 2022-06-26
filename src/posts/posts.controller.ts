@@ -26,7 +26,11 @@ export class PostsController {
     if (query.type) {
       if (query.important === 'true') {
         if (query.count) {
-          return this.postsService.findImportantByType(query.type, query.count);
+          return this.postsService.findAllByType(
+            query.type,
+            query.important,
+            query.count,
+          );
         } else {
           return "Missing 'count' parameter";
         }
