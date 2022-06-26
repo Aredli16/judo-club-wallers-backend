@@ -1,0 +1,29 @@
+name: Create and publish a Docker image
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build-and-push:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Docker Login
+        uses: docker/login-action@v2.0.0
+        with:
+          username: ${{secrets.DOCKER_HUB_USERNAME }}
+          password: ${{secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v3.0.0
+        with:
+          tags: ${{secrets.DOCKER_HUB_USERNAME }}/judo-club-wallers-backend:latest
+          push: true
+        
