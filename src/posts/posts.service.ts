@@ -34,17 +34,18 @@ export class PostsService {
   }
 
   async findAllByType(type: string): Promise<Post[]> {
-    const posts: Post[] = [];
+    let posts: Post[] = [];
     (
       await getFirestore().collection('posts').where('type', '==', type).get()
     ).docs.map((data) => {
       posts.push({ id: data.id, ...(data.data() as Post) });
     });
+    posts = this.sortTabByDateAsc(posts);
     return posts;
   }
 
   async findImportantByType(type, count): Promise<Post[]> {
-    const posts: Post[] = [];
+    let posts: Post[] = [];
     (
       await getFirestore()
         .collection('posts')
@@ -54,6 +55,8 @@ export class PostsService {
     ).docs.map((data) => {
       posts.push({ id: data.id, ...(data.data() as Post) });
     });
+    posts = this.sortTabByDateAsc(posts);
+    posts.splice(count);
     return posts;
   }
 
@@ -104,13 +107,18 @@ export class PostsService {
   }
 
   async getAllPost(): Promise<Post[]> {
-    const posts: Post[] = [];
+    let posts: Post[] = [];
     (await getFirestore().collection('posts').get()).docs.map((data) => {
       posts.push({
         id: data.id,
         ...(data.data() as Post),
       });
     });
+    posts = this.sortTabByDateAsc(posts);
     return posts;
+  }
+
+  sortTabByDateAsc(tab: Post[]): Post[] {
+    return tab.sort((a, b) => b.date_posted - a.date_posted);
   }
 }
