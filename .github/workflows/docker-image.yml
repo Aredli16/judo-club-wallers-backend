@@ -15,6 +15,20 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Create .env file
+        uses: SpicyPizza/create-envfile@v1.3.0
+        with:
+          envkey_TYPE: ${{ secrets.FIREBASE_TYPE }}
+          envkey_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID}}
+          envkey_PRIVATE_KEY_ID: ${{ secrets.FIREBASE_PRIVATE_KEY_ID }}
+          envkey_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY}}
+          envkey_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
+          envkey_CLIENT_ID: ${{ secrets.FIREBASE_CLIENT_ID}}
+          envkey_AUTH_URI: ${{ secrets.FIREBASE_AUTH_URI }}
+          envkey_TOKEN_URI: ${{ secrets.FIREBASE_TOKEN_URI }}
+          envkey_AUTH_PROVIDER_X509_CERT_URL: ${{ secrets.FIREBASE_AUTH_PROVIDER_X509_CERT_URL }}
+          envkey_CLIENT_X509_CERT_URL: ${{ secrets.FIREBASE_CLIENT_X509_CERT_URL }}
+
       - name: Docker Login
         uses: docker/login-action@v2.0.0
         with:
