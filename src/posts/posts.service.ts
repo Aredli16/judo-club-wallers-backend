@@ -38,7 +38,11 @@ export class PostsService {
     (
       await getFirestore().collection('posts').where('type', '==', type).get()
     ).docs.map((data) => {
-      posts.push({ id: data.id, ...(data.data() as Post) });
+      posts.push({
+        id: data.id,
+        ...(data.data() as Post),
+        date_posted: data.get('date_posted').toDate(),
+      });
     });
     posts = this.sortTabByDateAsc(posts);
     return posts;
@@ -53,7 +57,11 @@ export class PostsService {
         .where('important', '==', true)
         .get()
     ).docs.map((data) => {
-      posts.push({ id: data.id, ...(data.data() as Post) });
+      posts.push({
+        id: data.id,
+        ...(data.data() as Post),
+        date_posted: data.get('date_posted').toDate(),
+      });
     });
     posts = this.sortTabByDateAsc(posts);
     posts.splice(count);
@@ -62,7 +70,11 @@ export class PostsService {
 
   async findOne(id: string): Promise<Post> {
     const response = await getFirestore().collection('posts').doc(id).get();
-    return { id: response.id, ...(response.data() as Post) };
+    return {
+      id: response.id,
+      ...(response.data() as Post),
+      date_posted: response.get('date_posted').toDate(),
+    };
   }
 
   async findPopular(count: number): Promise<Post[]> {
@@ -112,6 +124,7 @@ export class PostsService {
       posts.push({
         id: data.id,
         ...(data.data() as Post),
+        date_posted: data.get('date_posted').toDate(),
       });
     });
     posts = this.sortTabByDateAsc(posts);
