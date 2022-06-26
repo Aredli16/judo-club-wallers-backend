@@ -10,7 +10,6 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-judoclubwallers-4d9a5-firebase-adminsdk-zsjry-36162d98dc.json
 
 # OS
 .DS_Store
@@ -34,3 +33,6 @@ judoclubwallers-4d9a5-firebase-adminsdk-zsjry-36162d98dc.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Env file
+.env
